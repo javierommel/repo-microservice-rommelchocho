@@ -3,18 +3,20 @@ package com.rommelchocho.ms_clientes_personas.service;
 import java.util.List;
 import java.util.Optional;
 
-import com.rommelchocho.ms_clientes_personas.dto.ClienteDTO;
+import com.rommelchocho.ms_clientes_personas.dto.ClienteDto;
 import com.rommelchocho.ms_clientes_personas.entity.Cliente;
 
 public interface ClienteService {
     
-    Cliente createCliente(Cliente cliente);
+    ClienteDto createCliente(Cliente cliente);
 
-    List<ClienteDTO> getAllClientes();
+    List<ClienteDto> getAllClientes();
 
-    Optional<ClienteDTO> getClienteById(Long id);
+    Optional<ClienteDto> getClienteById(Long id);
 
-    Optional<ClienteDTO> updateCliente(Long id, Cliente cliente);
+    Optional<ClienteDto> updateCliente(Long id, Cliente cliente);
 
     void deleteCliente(Long id);
+
+    Boolean existeCliente(String clienteId);
 }

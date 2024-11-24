@@ -18,5 +18,7 @@ public class Cuenta {
     private String tipo;
     private Double saldoInicial;
     private Boolean estado;
-
+    
+    @Column(nullable = false)
+    private String clienteId;
 }

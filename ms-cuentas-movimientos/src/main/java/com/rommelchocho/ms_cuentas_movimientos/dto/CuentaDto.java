@@ -1,5 +1,5 @@
 package com.rommelchocho.ms_cuentas_movimientos.dto;
 
-public class MovimientoDTO {
-
+public class CuentaDto {
+    
 }
