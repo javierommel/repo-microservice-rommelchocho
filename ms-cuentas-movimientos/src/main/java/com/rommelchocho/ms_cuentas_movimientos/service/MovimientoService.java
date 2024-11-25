@@ -10,7 +10,7 @@ import com.rommelchocho.ms_cuentas_movimientos.entity.Movimiento;
 @Service
 public interface MovimientoService {
 
-    Movimiento createMovimiento(Movimiento cuenta);
+    Movimiento createMovimiento(String numeroCuenta, String tipoMovimiento, Double valor);
 
     List<Movimiento> geAllMovimientos();
 

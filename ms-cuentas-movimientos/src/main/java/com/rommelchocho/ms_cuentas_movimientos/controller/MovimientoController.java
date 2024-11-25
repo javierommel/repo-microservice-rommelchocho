@@ -12,17 +12,24 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.rommelchocho.ms_cuentas_movimientos.dto.MovimientoRequestDto;
 import com.rommelchocho.ms_cuentas_movimientos.entity.Movimiento;
+import com.rommelchocho.ms_cuentas_movimientos.service.MovimientoService;
 
 @RestController
 @RequestMapping("/movimientos")
 public class MovimientoController {
 
+    private final MovimientoService movimientoService;
+
+    public MovimientoController(MovimientoService movimientoService) {
+        this.movimientoService = movimientoService;
+    }
      // Crear un nuevo Movimiento
     @PostMapping
-    public ResponseEntity<Movimiento> createMovimiento(@RequestBody Movimiento movimiento) {
-        //return ResponseEntity.ok(movimientoService.createMovimiento(movimiento));
-        return null;
+    public ResponseEntity<Movimiento> createMovimiento(@RequestBody MovimientoRequestDto movimientoDto) {
+        Movimiento movimiento = movimientoService.createMovimiento(movimientoDto.getNumeroCuenta(), movimientoDto.getTipoMovimiento(), movimientoDto.getValor());
+        return ResponseEntity.ok(movimiento);
     }
 
     // Obtener todos los Movimientos

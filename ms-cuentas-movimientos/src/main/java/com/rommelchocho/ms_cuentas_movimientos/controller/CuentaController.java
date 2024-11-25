@@ -13,22 +13,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rommelchocho.ms_cuentas_movimientos.entity.Cuenta;
+import com.rommelchocho.ms_cuentas_movimientos.service.CuentaService;
 
 @RestController
 @RequestMapping("/cuentas")
 public class CuentaController {
+
+    private final CuentaService cuentaService;
+
+    public CuentaController(CuentaService cuentaService) {
+        this.cuentaService = cuentaService;
+    }
+
     // Crear una nueva Cuenta
     @PostMapping
     public ResponseEntity<Cuenta> createCuenta(@RequestBody Cuenta cuenta) {
-        //return ResponseEntity.ok(cuentaService.createCuenta(cuenta));
-        return null;
+        return ResponseEntity.ok(cuentaService.createCuenta(cuenta));
     }
 
     // Obtener todas las Cuentas
     @GetMapping
     public ResponseEntity<List<Cuenta>> getAllCuentas() {
-        //return ResponseEntity.ok(cuentaService.getAllCuentas());
-        return null;
+        return ResponseEntity.ok(cuentaService.getAllCuentas());
     }
 
     // Obtener una Cuenta por ID

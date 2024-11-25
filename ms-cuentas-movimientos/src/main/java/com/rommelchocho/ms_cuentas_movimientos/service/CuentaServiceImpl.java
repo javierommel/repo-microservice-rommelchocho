@@ -2,33 +2,32 @@ package com.rommelchocho.ms_cuentas_movimientos.service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
-import com.rommelchocho.ms_cuentas_movimientos.dto.ClienteVerificarRequest;
+import org.springframework.stereotype.Service;
+
+import com.rommelchocho.ms_cuentas_movimientos.entity.ClienteReplica;
 import com.rommelchocho.ms_cuentas_movimientos.entity.Cuenta;
-import com.rommelchocho.ms_cuentas_movimientos.messaging.ClienteProducer;
+import com.rommelchocho.ms_cuentas_movimientos.repository.ClienteReplicaRepository;
 import com.rommelchocho.ms_cuentas_movimientos.repository.CuentaRepository;
 
+@Service
 public class CuentaServiceImpl implements CuentaService {
 
     private final CuentaRepository cuentaRepository;
-    private final ClienteProducer clienteProducer;
-    private final ConcurrentHashMap<String, Cuenta> solicitudesPendientes = new ConcurrentHashMap<>();
+    private final ClienteReplicaRepository clienteReplicaRepository;
 
-    public CuentaServiceImpl(CuentaRepository cuentaRepository, ClienteProducer clienteProducer) {
+    public CuentaServiceImpl(CuentaRepository cuentaRepository, ClienteReplicaRepository clienteReplicaRepository) {
         this.cuentaRepository = cuentaRepository;
-        this.clienteProducer = clienteProducer;
+        this.clienteReplicaRepository = clienteReplicaRepository;
     }
 
     @Override
     public Cuenta createCuenta(Cuenta cuenta) {
-        String solicitudId = UUID.randomUUID().toString();
-        solicitudesPendientes.put(solicitudId, cuenta);
-        solicitudesPendientes.put(solicitudId, cuenta);
-        ClienteVerificarRequest request = new ClienteVerificarRequest(cuenta.getClienteId(), solicitudId);
-        clienteProducer.enviarSolicitudCliente(request);
-        return cuentaRepository.save(cuenta);
+        Optional<ClienteReplica> clienteReplica=clienteReplicaRepository.findByClienteId(cuenta.getClienteId());
+        if(clienteReplica.isPresent()){
+            return cuentaRepository.save(cuenta);
+        }
+        return null;
     }
 
     @Override
@@ -38,7 +37,7 @@ public class CuentaServiceImpl implements CuentaService {
     }
 
     @Override
-    public List<Cuenta> geAllCuentas() {
+    public List<Cuenta> getAllCuentas() {
         return (List<Cuenta>) cuentaRepository.findAll();
     }
 

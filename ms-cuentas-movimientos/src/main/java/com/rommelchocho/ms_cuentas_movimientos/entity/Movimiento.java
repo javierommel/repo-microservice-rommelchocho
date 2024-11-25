@@ -21,6 +21,6 @@ public class Movimiento {
     private Double valor;
     private Double saldoDisponible;
     @ManyToOne
-    @JoinColumn(name="cuenta_id", nullable=false)
-    private Cuenta cuenta;
+    @JoinColumn(name = "numero_cuenta", referencedColumnName = "numeroCuenta", nullable = false)
+    private Cuenta numeroCuenta;
 }

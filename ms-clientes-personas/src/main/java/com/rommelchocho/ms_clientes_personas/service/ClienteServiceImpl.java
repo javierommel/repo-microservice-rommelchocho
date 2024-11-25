@@ -9,26 +9,34 @@ import org.springframework.stereotype.Service;
 import com.rommelchocho.ms_clientes_personas.dto.ClienteDto;
 import com.rommelchocho.ms_clientes_personas.dto.mapper.ClienteMapperDto;
 import com.rommelchocho.ms_clientes_personas.entity.Cliente;
+import com.rommelchocho.ms_clientes_personas.messaging.ClienteSyncProducer;
 import com.rommelchocho.ms_clientes_personas.repository.ClienteRepository;
 
 @Service
 public class ClienteServiceImpl implements ClienteService {
 
     private final ClienteRepository clienteRepository;
+    private final ClienteSyncProducer clienteSyncProducer;
 
-    public ClienteServiceImpl(ClienteRepository clienteRepository) {
+    public ClienteServiceImpl(ClienteRepository clienteRepository, ClienteSyncProducer clienteSyncProducer) {
         this.clienteRepository = clienteRepository;
+        this.clienteSyncProducer = clienteSyncProducer;
     }
 
     @Override
     public ClienteDto createCliente(Cliente cliente) {
-        return ClienteMapperDto.build(clienteRepository.save(cliente));
+        Cliente clienteOptional = clienteRepository.save(cliente);
+        clienteSyncProducer.enviarActualizacionCliente(clienteOptional.getClienteId(), clienteOptional.getNombre());
+        return ClienteMapperDto.build(clienteOptional);
     }
 
     @Override
     public void deleteCliente(Long id) {
+        Optional<Cliente> clienteAsync = clienteRepository.findById(id);
+        if (clienteAsync.isPresent()) {
+            clienteSyncProducer.enviarEliminacionCliente(clienteAsync.orElseThrow().getClienteId());
+        }
         clienteRepository.deleteById(id);
-
     }
 
     @Override
@@ -55,7 +63,8 @@ public class ClienteServiceImpl implements ClienteService {
             Cliente clienteDb = cliente.orElseThrow();
             clienteDb.setContrasena(clienteNuevo.getContrasena());
             clienteDb.setEstado(clienteNuevo.getEstado());
-            clienteRepository.save(cliente.orElseThrow());
+            clienteOptional = clienteRepository.save(cliente.orElseThrow());
+            clienteSyncProducer.enviarActualizacionCliente(clienteOptional.getClienteId(), clienteOptional.getNombre());
         }
         return Optional.ofNullable(ClienteMapperDto.build(clienteOptional));
     }

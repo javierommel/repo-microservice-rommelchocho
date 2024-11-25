@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClienteVerificarRequest {
-
-    private String clienteId; 
-    private String solicitudId;
+public class ClienteSyncMessage {
+    private String clienteId;
+    private String nombre;
 }

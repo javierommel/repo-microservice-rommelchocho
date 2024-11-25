@@ -12,7 +12,7 @@ public interface CuentaService {
     
     Cuenta createCuenta(Cuenta cuenta);
 
-    List<Cuenta> geAllCuentas();
+    List<Cuenta> getAllCuentas();
 
     Optional<Cuenta> getCuentaById(Long id);
 
